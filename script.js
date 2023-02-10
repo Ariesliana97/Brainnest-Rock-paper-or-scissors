@@ -1,94 +1,128 @@
-//Capture computer choice
-function computerPlay() {
-	let computerAns = ["rock", "paper", "scissors"];
-	let computerSelection =
-		computerAns[Math.floor(Math.random() * computerAns.length)];
-	return computerSelection;
-}
-// capture user choice
-function userPlay() {
-	let playerSelection = prompt("Choose Object :", "");
-	return playerSelection;
-}
+/ Game variables
+const ROCK = "rock";
+const PAPER = "paper";
+const SCISSORS = "scissors";
+const QUIT = "quit";
+const PLAYER = "player";
+const COMPUTER = "computer";
+const TIE = "tie";
+let PLAYER_SCORE = 0;
+let COMPUTER_SCORE = 0;
 
-let result;
-let userPts = 0;
-let compPts = 0;
-let points = 0;
-let userTotal = 0;
-let compTotal = 0;
+// Game functions
 
-function playRound(playerSelection, computerSelection) {
-	if (playerSelection === "rock" && computerSelection === "rock") {
-		userPts = 1;
-		compPts = 1;
-		result = `${playerSelection} and ${computerSelection} : You tie, Your score is : ${userPts} points`;
-	} else if (playerSelection === "rock" && computerSelection === "paper") {
-		userPts = 0;
-		compPts = 2;
-		result = `${playerSelection} and ${computerSelection} : You loose, paper covers rock ${userPts} points`;
-	} else if (playerSelection === "rock" && computerSelection === "scissors") {
-		userPts = 2;
-		compPts = 0;
-		result = `${playerSelection} and ${computerSelection} : You win, rock beats scissors: ${userPts} points`;
-	} else if (playerSelection === "paper" && computerSelection === "paper") {
-		userPts = 1;
-		compPts = 1;
-		result = `${playerSelection} and ${computerSelection} : You tie, Your score is :  ${userPts} points`;
-	} else if (playerSelection === "paper" && computerSelection === "rock") {
-		userPts = 2;
-		compPts = 0;
-		result = `${playerSelection} and ${computerSelection} : You win, paper covers rock ${userPts} points`;
-	} else if (playerSelection === "paper" && computerSelection === "scissors") {
-		userPts = 0;
-		compPts = 2;
-		result = `${playerSelection} and ${computerSelection} : You loose, Scissors cuts paper : ${userPts} points`;
-	} else if (
-		playerSelection === "scissors" &&
-		computerSelection === "scissors"
-	) {
-		userPts = 1;
-		compPts = 1;
-		result = `${playerSelection} and ${computerSelection} : You tie ${userPts} points`;
-	} else if (playerSelection === "scissors" && computerSelection === "paper") {
-		userPts = 2;
-		compPts = 0;
-		result = `${playerSelection} and ${computerSelection} : You win, scissors cut paper : ${userPts} points`;
-	} else if (playerSelection === "scissors" && computerSelection === "rock") {
-		userPts = 0;
-		compPts = 2;
-		result = `${playerSelection} and ${computerSelection} : You loose, rock beats scissors : ${userPts} points`;
-	} else {
-		userPts = 0;
-		compPts = 0;
-		result = `wrong input ${playerSelection} and ${computerSelection}`;
-	}
-	return console.log(result);
+/**
+ * Determines if given word is a legal input
+ * @returns `true` if given word is valid, `false` otherwise
+ */
+function isLegalChoice(word) {
+  const legalChoices = [ROCK, PAPER, SCISSORS, QUIT];
+  return legalChoices.includes(word);
 }
 
-function game() {
-	let playerSelection;
-	let computerSelection;
-	let rounds = 0;
-	while (rounds <= 5) {
-		playRound(userPlay(), computerPlay());
-		userTotal += userPts;
-		compTotal += compPts;
-		rounds++;
-	}
-	// Computing and displaying  the winner
-	if (userTotal > compTotal) {
-		console.log(`Your score is: ${userTotal}`);
-		console.log(`Computer score is: ${compTotal}`);
-		console.log(`**Congragulations, You have won!**`);
-	} else if (userTotal == compTotal) {
-		console.log(`Your score is: ${userTotal}`);
-		console.log(`Computer score is: ${compTotal}`);
-		console.log(`** HuH!!, IT IS A TIE !**`);
-	} else {
-		console.log(`Your score is: ${userTotal}`);
-		console.log(`Computer score is: ${compTotal}`);
-		console.log("You have lost");
-	}
-	return;
+/**
+ * Asks the player what their choice is.
+ * @returns `string` constant of player's choice
+ */
+function getPlayerChoice() {
+  let choice;
+  while (true) {
+    choice = prompt("Rock, Paper, or Scissors? (or quit to exit)", "")
+      .toLowerCase()
+      .trim();
+    if (isLegalChoice(choice)) break;
+    alert(
+      `I don't know "${choice}"\nPlease enter: rock, paper, scissors, or quit.`
+    );
+  }
+  switch (choice) {
+    case ROCK:
+      return ROCK;
+    case PAPER:
+      return PAPER;
+    case SCISSORS:
+      return SCISSORS;
+    case QUIT:
+      return QUIT;
+    default:
+      console.error("Unknown case");
+      return QUIT;
+  }
+}
+
+/**
+ * Gets a random choice for the computer
+ * @returns `string` constant of the computer's choice
+ */
+function getComputerChoice() {
+  const choices = [ROCK, PAPER, SCISSORS];
+  const randIdx = Math.round(Math.random() * (choices.length - 1));
+  return choices[randIdx];
+}
+
+/**
+ * Displays a message to user before returning false
+ * @returns `false`
+ */
+function quitGame() {
+  alert("Quiting game...");
+  return false;
+}
+
+/**
+ * Determines the result of the round.
+ * @returns `string` constant of the winner
+ */
+function determineWinner(playerChoice, computerChoice) {
+  if (playerChoice === computerChoice) return TIE;
+  if (playerChoice === ROCK) {
+    if (computerChoice === SCISSORS) return PLAYER;
+    if (computerChoice === PAPER) return COMPUTER;
+  }
+  if (playerChoice === PAPER) {
+    if (computerChoice === SCISSORS) return COMPUTER;
+    if (computerChoice === ROCK) return PLAYER;
+  }
+  if (playerChoice === SCISSORS) {
+    if (computerChoice === ROCK) return COMPUTER;
+    if (computerChoice === PAPER) return PLAYER;
+  }
+}
+
+/**
+ * Handles displaying message to the user and
+ * incrementing the scores at the end of the round.
+ */
+function handleWinner(winner, playerChoice, computerChoice) {
+  let msg = "";
+  if (winner === PLAYER) {
+    msg += " You won!";
+    PLAYER_SCORE++;
+  }
+  if (winner === COMPUTER) {
+    msg += " You lost!";
+    COMPUTER_SCORE++;
+  }
+  if (winner === TIE) msg += " It's a tie!";
+  msg += `\nYou chose ${playerChoice}, the computer chose ${computerChoice}.`;
+  msg += `\n\nThe score is now:\nYou: ${PLAYER_SCORE} – Computer: ${COMPUTER_SCORE}`;
+  alert(msg);
+}
+
+/**
+ * Handles playing one round of Rock, Paper, Scissors.
+ * @returns `true` if play should continue, `false` to quit the game.
+ */
+function playRound() {
+  const playerChoice = getPlayerChoice();
+  if (playerChoice === QUIT) return quitGame();
+  const computerChoice = getComputerChoice();
+  const winner = determineWinner(playerChoice, computerChoice);
+  handleWinner(winner, playerChoice, computerChoice);
+  return true;
+}
+
+// Call this function to play the game
+function playRockPaperScissors() {
+  while (playRound()) {}
 }
