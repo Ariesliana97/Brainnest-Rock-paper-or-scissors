@@ -5,3 +5,5 @@ Once open on file, Ctrl + shift + I to open developer tool
 Select Console tab
 Copy/paste => playRockPaperScissors(); into the type box within the console 
 Hit enter and Enjoy the Game!
+
+https://ariesliana97.github.io/Brainnest-Rock-paper-or-scissors/
