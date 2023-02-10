@@ -1,4 +1,4 @@
-/ Game variables
+// Game variables
 const ROCK = "rock";
 const PAPER = "paper";
 const SCISSORS = "scissors";
